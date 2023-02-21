@@ -22,7 +22,6 @@ jobs:
       - run: docker push tommy2804/multi-nginx-10-14
       - run: docker push tommy2804/multi-server-10-14
       - run: docker push tommy2804/multi-worker-10-14
-
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 

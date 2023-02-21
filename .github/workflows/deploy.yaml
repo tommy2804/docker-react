@@ -8,16 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/tommy2804
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t cygnetops/react-test -f Dockerfile.dev .
-      - run: docker run -e CI=true cygnetops/react-test npm test
+      - run: docker build -t tommy2804/docker-react -f Dockerfile.dev .
+      - run: docker run -e CI=true tommy2804/docker-react npm test
 
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
       - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v18
+        uses: tommy2804/docker-react
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
@@ -25,5 +25,4 @@ jobs:
           environment_name: Mydocker-env
           existing_bucket_name: elasticbeanstalk-us-east-1-541486548624
           region: us-east-1
-          version_label: ${{ github.sha }}
-          deployment_package: deploy.zip
+          version_label: 12345

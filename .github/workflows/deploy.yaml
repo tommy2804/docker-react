@@ -18,7 +18,7 @@ jobs:
         run: zip -r deploy.zip . -x '*.git*'
 
       - name: Elastic Beanstalk Deployment
-        uses: kumarshivam12/Aws-ElasticBeanstalk@v1.3
+        uses: tommy2804/Aws-ElasticBeanstalk@v1.3
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}

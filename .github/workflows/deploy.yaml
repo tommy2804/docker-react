@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: tommy2804/docker-react
+      - uses: tommy2804/docker-react@v2
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t tommy2804/docker-react -f Dockerfile.dev .
       - run: docker run -e CI=true tommy2804/docker-react npm test

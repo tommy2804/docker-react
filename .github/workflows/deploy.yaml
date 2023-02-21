@@ -8,7 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: tommy2804/docker-react@v2
+      - name: Checkout source code
+        uses: actions/checkout@v1
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t tommy2804/docker-react -f Dockerfile.dev .
       - run: docker run -e CI=true tommy2804/docker-react npm test
@@ -16,8 +17,8 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
-      - name: Deploy to EB
-        uses: tommy2804aws-beanstalk-deployment@v1
+      - name: Elastic Beanstalk Deployment
+        uses: kumarshivam12/Aws-ElasticBeanstalk@v1.3
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
           aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}

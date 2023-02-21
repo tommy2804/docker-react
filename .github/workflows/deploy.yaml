@@ -8,16 +8,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Log in to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build Docker image
-        run: docker build -t tommy2804/docker-react -f Dockerfile.dev .
-      - name: Run tests in Docker container
-        run: docker run -e CI=true tommy2804/docker-react npm test
+      - uses: actions/checkout@v1
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker build -t tommy2804/react-test -f ./client/Dockerfile.dev ./client
+      - run: docker run -e CI=true tommy2804/react-test npm test
+ 
+      - run: docker build -t tommy2804/multi-client-10-14 ./client
+      - run: docker build -t tommy2804/multi-nginx-10-14 ./nginx
+      - run: docker build -t tommy2804/multi-server-10-14 ./server
+      - run: docker build -t tommy2804/multi-worker-10-14 ./worker
+ 
+      - run: docker push tommy2804/multi-client-10-14
+      - run: docker push tommy2804/multi-nginx-10-14
+      - run: docker push tommy2804/multi-server-10-14
+      - run: docker push tommy2804/multi-worker-10-14
+
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
-      - name: Deploy to EB
+        - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v14
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
@@ -26,4 +35,8 @@ jobs:
           environment_name: Mydocker-env
           existing_bucket_name: elasticbeanstalk-us-east-1-541486548624
           region: us-east-1
-          version_label: 12345
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
+        
+      
+        
